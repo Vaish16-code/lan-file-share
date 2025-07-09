@@ -1,0 +1,278 @@
+.qr-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.qr-modal {
+  background: white;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.qr-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px;
+  border-bottom: 1px solid #eee;
+}
+
+.qr-modal-header h2 {
+  font-size: 24px;
+  color: #333;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #666;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.qr-modal-content {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.qr-section {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+
+.qr-container {
+  flex-shrink: 0;
+}
+
+.qr-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 40px;
+  background: #f8f9fa;
+  border-radius: 15px;
+  width: 200px;
+  height: 200px;
+  justify-content: center;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e9ecef;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.qr-code {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #eee;
+}
+
+.qr-image {
+  width: 200px;
+  height: 200px;
+  display: block;
+}
+
+.qr-instructions {
+  flex: 1;
+}
+
+.qr-instructions h3 {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.qr-instructions p {
+  color: #666;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.url-section {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.url-section h3 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.url-container {
+  display: flex;
+  gap: 10px;
+}
+
+.url-display {
+  flex: 1;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  overflow-x: auto;
+}
+
+.url-display code {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: #333;
+  word-break: break-all;
+}
+
+.copy-btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.features-section,
+.tips-section {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.features-section h3,
+.tips-section h3 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.features-list,
+.tips-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.features-list li,
+.tips-list li {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.qr-modal-footer {
+  padding: 25px;
+  border-top: 1px solid #eee;
+  text-align: center;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .qr-modal-overlay {
+    padding: 10px;
+  }
+  
+  .qr-modal {
+    max-width: 100%;
+    max-height: 95vh;
+  }
+  
+  .qr-modal-header,
+  .qr-modal-content,
+  .qr-modal-footer {
+    padding: 20px;
+  }
+  
+  .qr-section {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .qr-modal-content {
+    gap: 20px;
+  }
+  
+  .url-container {
+    flex-direction: column;
+  }
+  
+  .copy-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .qr-modal-header h2 {
+    font-size: 20px;
+  }
+  
+  .qr-code {
+    padding: 15px;
+  }
+  
+  .qr-image {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .qr-loading {
+    width: 150px;
+    height: 150px;
+    padding: 30px;
+  }
+  
+  .features-section,
+  .tips-section,
+  .url-section {
+    padding: 15px;
+  }
+}

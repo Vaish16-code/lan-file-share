@@ -1,0 +1,120 @@
+.header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 15px 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.logo-icon {
+  font-size: 32px;
+}
+
+.device-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(103, 126, 234, 0.1);
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.device-icon {
+  font-size: 18px;
+}
+
+.device-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.device-ip {
+  color: #666;
+  font-family: monospace;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.browser-notice {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.notice-text {
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .logo-section {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+  
+  .device-info {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 12px 15px;
+  }
+  
+  .logo {
+    font-size: 20px;
+  }
+  
+  .logo-icon {
+    font-size: 28px;
+  }
+  
+  .header-actions {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .header-actions .btn {
+    flex: 1;
+    max-width: 150px;
+  }
+}

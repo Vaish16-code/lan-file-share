@@ -1,0 +1,81 @@
+{
+  "name": "lan-file-share",
+  "version": "1.0.0",
+  "description": "Cross-platform desktop app for instant and secure file sharing over local networks",
+  "main": "public/electron.js",
+  "homepage": "./",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "electron": "electron .",
+    "electron-dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-pack": "electron-builder",
+    "preelectron-pack": "npm run build",
+    "dist": "npm run build && electron-builder --publish=never"
+  },
+  "keywords": [
+    "file-sharing",
+    "p2p",
+    "electron",
+    "react",
+    "lan",
+    "cross-platform"
+  ],
+  "author": "File Share App",
+  "license": "MIT",
+  "dependencies": {
+    "bonjour": "^3.5.0",
+    "concurrently": "^9.2.0",
+    "dgram": "^1.0.1",
+    "electron": "^37.2.0",
+    "electron-builder": "^26.0.12",
+    "electron-is-dev": "^3.0.1",
+    "express": "^5.1.0",
+    "fs-extra": "^11.3.0",
+    "multer": "^2.0.1",
+    "multicast-dns": "^7.2.5",
+    "net": "^1.0.2",
+    "qrcode": "^1.5.4",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-scripts": "^5.0.1",
+    "uuid": "^11.1.0",
+    "wait-on": "^8.0.3"
+  },
+  "build": {
+    "appId": "com.fileshare.app",
+    "productName": "LAN File Share",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "build/**/*",
+      "public/electron.js",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
