@@ -3,21 +3,25 @@
   flex-direction: column;
   height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  overflow: hidden;
+  font-size: 14px; /* Optimized for 1920x1080 */
 }
 
 .main-content {
   flex: 1;
   padding: 20px;
-  overflow: hidden;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .content-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
-  height: 100%;
-  max-width: 1400px;
+  height: calc(100vh - 110px); /* Adjusted for better fit */
+  max-width: 1800px; /* Optimized for 1920px width */
   margin: 0 auto;
+  align-items: start; /* Ensure proper alignment */
 }
 
 .left-panel,
@@ -25,26 +29,129 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-height: 0;
+  height: 100%;
+  overflow: visible; /* Allow content to be visible */
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
+/* Specific styling for right panel components distribution */
+.right-panel > *:nth-child(1) {
+  /* File Selection - takes more space to show buttons */
+  flex: 0 0 320px;
+}
+
+.right-panel > *:nth-child(2) {
+  /* File Drop Zone - medium space */
+  flex: 0 0 250px;
+}
+
+.right-panel > *:nth-child(3) {
+  /* Transfer Status - remaining space */
+  flex: 1 1 200px;
+  min-height: 200px !important;
+}
+
+/* Ensure Transfer Status is always visible */
+.transfer-status {
+  opacity: 1 !important;
+  visibility: visible !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Button styles with disabled state */
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn:disabled:hover {
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive design optimized for common screen sizes */
+@media (max-width: 1600px) {
   .content-grid {
-    grid-template-columns: 1fr;
+    max-width: 95%;
+    gap: 18px;
+  }
+  
+  .main-content {
+    padding: 18px;
+  }
+  
+  /* Adjust right panel components for smaller screens */
+  .right-panel > *:nth-child(1) {
+    flex: 0 0 280px;
+  }
+  
+  .right-panel > *:nth-child(2) {
+    flex: 0 0 220px;
+  }
+  
+  .right-panel > *:nth-child(3) {
+    flex: 1 1 180px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .content-grid {
+    max-width: 100%;
     gap: 15px;
   }
   
   .main-content {
     padding: 15px;
   }
+  
+  .App {
+    font-size: 13px;
+  }
+  
+  /* Stack components vertically for smaller screens */
+  .right-panel > *:nth-child(1),
+  .right-panel > *:nth-child(2),
+  .right-panel > *:nth-child(3) {
+    flex: 0 0 auto;
+    max-height: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    height: auto;
+  }
+  
+  .main-content {
+    padding: 15px;
+  }
+  
+  .left-panel,
+  .right-panel {
+    gap: 15px;
+    height: auto;
+  }
+  
+  .App {
+    font-size: 14px;
+  }
 }
 
 @media (max-width: 480px) {
   .main-content {
-    padding: 10px;
+    padding: 12px;
   }
   
   .content-grid {
-    gap: 10px;
+    gap: 12px;
+  }
+  
+  .left-panel,
+  .right-panel {
+    gap: 12px;
   }
 }

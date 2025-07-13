@@ -1,32 +1,37 @@
 .file-drop-zone {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 25px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
+  flex: 1;
+  min-height: 180px;
+  max-height: 250px;
 }
 
 .section-header h2 {
-  font-size: 20px;
+  font-size: 1.3em;
   color: #333;
   margin: 0;
+  font-weight: 600;
 }
 
 .drop-area {
-  border: 3px dashed #ddd;
-  border-radius: 15px;
-  padding: 40px 20px;
+  border: 2px dashed #ddd;
+  border-radius: 10px;
+  padding: 30px 20px;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
   background: rgba(248, 249, 250, 0.5);
-  min-height: 200px;
+  min-height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 1;
 }
 
 .drop-area:hover {
@@ -36,8 +41,20 @@
 
 .drop-area.drag-over {
   border-color: #28a745;
-  background: rgba(40, 167, 69, 0.1);
+  background: rgba(40, 167, 69, 0.12);
   transform: scale(1.02);
+}
+
+.drop-area.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  background: rgba(248, 249, 250, 0.3);
+}
+
+.drop-area.disabled:hover {
+  border-color: #ddd;
+  background: rgba(248, 249, 250, 0.3);
+  transform: none;
 }
 
 .drop-content {
@@ -45,54 +62,60 @@
 }
 
 .drop-icon {
-  font-size: 64px;
-  margin-bottom: 20px;
+  font-size: 2.2em;
+  margin-bottom: 10px;
   opacity: 0.7;
 }
 
 .drop-text h3 {
   color: #333;
-  margin-bottom: 10px;
-  font-size: 18px;
+  margin-bottom: 6px;
+  font-size: 1.1em;
+  font-weight: 600;
 }
 
 .drop-text p {
   color: #666;
-  font-size: 14px;
+  font-size: 0.9em;
+  line-height: 1.4;
 }
 
 .files-preview h3 {
   color: #333;
-  margin-bottom: 15px;
-  font-size: 16px;
+  margin-bottom: 10px;
+  font-size: 1em;
+  font-weight: 600;
 }
 
 .files-list {
-  max-height: 200px;
   overflow-y: auto;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
+  flex: 1;
+  min-height: 0;
+  max-height: 150px;
 }
 
 .file-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 10px 12px;
   background: white;
   border: 1px solid #eee;
   border-radius: 8px;
   margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .file-info {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex: 1;
 }
 
 .file-icon {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .file-details {
@@ -235,6 +258,21 @@
   padding: 15px 30px;
   font-size: 16px;
   font-weight: 600;
+}
+
+.web-limitation-notice {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.web-limitation-notice p {
+  margin: 0;
+  color: #856404;
+  font-size: 0.9em;
 }
 
 /* Responsive design */

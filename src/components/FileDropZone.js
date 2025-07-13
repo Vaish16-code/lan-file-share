@@ -75,12 +75,18 @@ const FileDropZone = ({ peers, onFileSend, isElectron = true }) => {
         <h2>📁 File Transfer</h2>
       </div>
       
+      {!isElectron && (
+        <div className="web-limitation-notice">
+          <p>📱 File drag & drop is only available in the desktop app</p>
+        </div>
+      )}
+      
       <div
-        className={`drop-area ${isDragOver ? 'drag-over' : ''}`}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        onClick={handleFileSelect}
+        className={`drop-area ${isDragOver ? 'drag-over' : ''} ${!isElectron ? 'disabled' : ''}`}
+        onDragOver={isElectron ? handleDragOver : undefined}
+        onDragLeave={isElectron ? handleDragLeave : undefined}
+        onDrop={isElectron ? handleDrop : undefined}
+        onClick={isElectron ? handleFileSelect : undefined}
       >
         <input
           ref={fileInputRef}
@@ -95,8 +101,18 @@ const FileDropZone = ({ peers, onFileSend, isElectron = true }) => {
             <>
               <div className="drop-icon">📁</div>
               <div className="drop-text">
-                <h3>Drop files here or click to select</h3>
-                <p>Select multiple files to send to nearby devices</p>
+                <h3>
+                  {isElectron 
+                    ? "Drop files here or click to select" 
+                    : "File transfer demo"
+                  }
+                </h3>
+                <p>
+                  {isElectron 
+                    ? "Select multiple files to send to nearby devices" 
+                    : "Download the desktop app for file transfer functionality"
+                  }
+                </p>
               </div>
             </>
           ) : (
@@ -126,10 +142,20 @@ const FileDropZone = ({ peers, onFileSend, isElectron = true }) => {
                   ))}
                 </div>
                 <div className="file-actions">
-                  <button className="btn btn-secondary" onClick={clearFiles}>
+                  <button 
+                    className="btn btn-secondary" 
+                    onClick={clearFiles}
+                    disabled={!isElectron}
+                    title={isElectron ? "Clear all files" : "Only available in desktop app"}
+                  >
                     Clear All
                   </button>
-                  <button className="btn btn-primary" onClick={handleFileSelect}>
+                  <button 
+                    className="btn btn-primary" 
+                    onClick={handleFileSelect}
+                    disabled={!isElectron}
+                    title={isElectron ? "Add more files" : "Only available in desktop app"}
+                  >
                     Add More
                   </button>
                 </div>
@@ -179,6 +205,8 @@ const FileDropZone = ({ peers, onFileSend, isElectron = true }) => {
                 <button
                   className="btn btn-success send-files-btn"
                   onClick={handleSendFiles}
+                  disabled={!isElectron}
+                  title={isElectron ? `Send files to ${selectedPeer.name}` : "Only available in desktop app"}
                 >
                   📤 Send {selectedFiles.length} file{selectedFiles.length !== 1 ? 's' : ''} to {selectedPeer.name}
                 </button>

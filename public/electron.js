@@ -3,12 +3,14 @@ const path = require('path');
 const isDev = require('electron-is-dev');
 const { networkDiscovery } = require('./network/discovery');
 const { fileTransfer } = require('./network/fileTransfer');
-const { fileServer } = require('./network/fileServer');
+const FileServer = require('./network/fileServer');
+const QRCodeGenerator = require('./network/qrGenerator');
 
 let mainWindow;
 let discoveryService;
 let transferService;
 let serverService;
+let qrGenerator;
 
 function createWindow() {
   // Create the browser window
@@ -128,7 +130,8 @@ function initializeNetworkServices() {
   try {
     discoveryService = new networkDiscovery();
     transferService = new fileTransfer();
-    serverService = new fileServer();
+    serverService = new FileServer();
+    qrGenerator = new QRCodeGenerator();
 
     // Start discovery service
     discoveryService.start();
@@ -208,17 +211,35 @@ ipcMain.handle('get-device-info', () => {
 
 ipcMain.handle('start-file-server', async (event, files) => {
   try {
-    console.log('Starting file server with files:', files);
+    console.log('🚀 Starting file server with files:', files);
+    
     if (!serverService) {
-      console.error('Server service not initialized');
+      console.error('❌ Server service not initialized');
       throw new Error('Server service not initialized');
     }
+    
+    if (!files || files.length === 0) {
+      console.log('⚠️ No files provided, starting server with empty file list');
+      files = [];
+    }
+    
+    console.log('🔧 Calling serverService.start...');
     const serverUrl = await serverService.start(files);
-    console.log('File server started successfully at:', serverUrl);
+    
+    if (!serverUrl) {
+      throw new Error('Server started but returned no URL');
+    }
+    
+    console.log('✅ File server started successfully at:', serverUrl);
+    
+    // Give the server a moment to fully initialize
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
     return serverUrl;
   } catch (error) {
-    console.error('Failed to start file server:', error);
-    throw error;
+    console.error('❌ Failed to start file server:', error);
+    console.error('Error details:', error.stack);
+    throw new Error(`File server startup failed: ${error.message}`);
   }
 });
 
@@ -230,6 +251,40 @@ ipcMain.handle('stop-file-server', async () => {
   } catch (error) {
     console.error('Failed to stop file server:', error);
     throw error;
+  }
+});
+
+ipcMain.handle('generate-qr-code', async (event, url) => {
+  try {
+    console.log('🔄 QR code generation requested for URL:', url);
+    
+    if (!qrGenerator) {
+      console.error('❌ QR Generator not initialized');
+      throw new Error('QR Generator service not initialized');
+    }
+    
+    if (!url || typeof url !== 'string') {
+      throw new Error('Invalid URL provided for QR code generation');
+    }
+    
+    console.log('🔧 Calling qrGenerator.generateQRCode...');
+    const result = await qrGenerator.generateQRCode(url);
+    
+    if (!result) {
+      throw new Error('QR Generator returned no result');
+    }
+    
+    console.log('✅ QR code generation completed:', result.success ? 'Success' : 'Failed');
+    
+    return result;
+  } catch (error) {
+    console.error('❌ Failed to generate QR code:', error);
+    console.error('Error details:', error.stack);
+    return {
+      success: false,
+      error: error.message,
+      url: url
+    };
   }
 });
 

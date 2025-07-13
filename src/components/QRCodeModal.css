@@ -10,17 +10,17 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 20px;
+  padding: 10px;
 }
 
 .qr-modal {
   background: white;
-  border-radius: 20px;
+  border-radius: 16px;
   width: 100%;
-  max-width: 600px;
-  max-height: 90vh;
+  max-width: 450px;
+  max-height: 85vh;
   overflow-y: auto;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
   animation: modalSlideIn 0.3s ease-out;
 }
 
@@ -39,12 +39,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 25px;
+  padding: 15px;
   border-bottom: 1px solid #eee;
 }
 
 .qr-modal-header h2 {
-  font-size: 24px;
+  font-size: 20px;
   color: #333;
   margin: 0;
 }
@@ -52,10 +52,10 @@
 .close-btn {
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: 20px;
   color: #666;
   cursor: pointer;
-  padding: 5px;
+  padding: 4px;
   border-radius: 50%;
   transition: all 0.3s ease;
 }
@@ -66,15 +66,15 @@
 }
 
 .qr-modal-content {
-  padding: 25px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 15px;
 }
 
 .qr-section {
   display: flex;
-  gap: 25px;
+  gap: 15px;
   align-items: center;
 }
 
@@ -86,20 +86,20 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
-  padding: 40px;
+  gap: 10px;
+  padding: 25px;
   background: #f8f9fa;
-  border-radius: 15px;
-  width: 200px;
-  height: 200px;
+  border-radius: 12px;
+  width: 150px;
+  height: 150px;
   justify-content: center;
 }
 
 .loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #e9ecef;
-  border-top: 4px solid #667eea;
+  width: 30px;
+  height: 30px;
+  border: 3px solid #e9ecef;
+  border-top: 3px solid #667eea;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -111,15 +111,15 @@
 
 .qr-code {
   background: white;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #eee;
 }
 
 .qr-image {
-  width: 200px;
-  height: 200px;
+  width: 150px;
+  height: 150px;
   display: block;
 }
 
@@ -129,14 +129,14 @@
 
 .qr-instructions h3 {
   color: #333;
-  margin-bottom: 10px;
-  font-size: 18px;
+  margin-bottom: 6px;
+  font-size: 16px;
 }
 
 .qr-instructions p {
   color: #666;
-  line-height: 1.5;
-  font-size: 14px;
+  line-height: 1.4;
+  font-size: 13px;
 }
 
 .url-section {

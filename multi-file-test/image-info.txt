@@ -1,0 +1,4 @@
+Information about images:
+- PNG: Portable Network Graphics
+- JPG: Joint Photographic Experts Group
+- GIF: Graphics Interchange Format

@@ -1,0 +1,259 @@
+import React, { useState, useEffect } from 'react';
+import QRCode from 'qrcode';
+import './QRCodeModal.css';
+
+function QRCodeModal({ url, onClose, files = [] }) {
+  const [qrCodeData, setQrCodeData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [serverStatus, setServerStatus] = useState('Starting server...');
+
+  useEffect(() => {
+    if (url) {
+      console.log('🚀 QR Modal opened for URL:', url);
+      // Start the server readiness check and QR generation process
+      waitForServerAndGenerateQR();
+    } else {
+      console.error('❌ No server URL provided to QR modal');
+      setError('No server URL provided');
+      setLoading(false);
+      setServerStatus('🔴 Server not started');
+    }
+  }, [url]);
+
+  const generateQRCode = async (retryCount = 0) => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      console.log('🔄 Generating QR code directly for URL:', url);
+      
+      // Generate QR code directly using the QRCode library
+      const qrCodeDataURL = await QRCode.toDataURL(url, {
+        width: 300,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        },
+        errorCorrectionLevel: 'M'
+      });
+      
+      console.log('✅ QR code generated successfully!');
+      console.log('📏 QR code data length:', qrCodeDataURL.length);
+      
+      setQrCodeData({
+        dataURL: qrCodeDataURL,
+        url: url
+      });
+      setLoading(false);
+      setServerStatus('🟢 Server online - QR code ready for scanning');
+      
+    } catch (error) {
+      console.error('❌ Failed to generate QR code:', error.message);
+      
+      setError(`QR Generation Failed: ${error.message}`);
+      setLoading(false);
+      setServerStatus('🔴 QR generation error - Using URL manually');
+      
+      // Still show the URL for manual entry
+      setQrCodeData({
+        dataURL: null,
+        url: url
+      });
+    }
+  };
+
+  const checkServerStatus = async () => {
+    if (!url) return;
+    
+    console.log('🔍 Checking server status at:', url);
+    
+    try {
+      const response = await fetch(url, { timeout: 5000 });
+      if (response.ok) {
+        setServerStatus('🟢 Server online - Ready for connections');
+      } else {
+        setServerStatus('🔴 Server error');
+      }
+    } catch (error) {
+      setServerStatus('🔴 Server not accessible - Check if files are shared');
+    }
+  };
+      const isReady = await checkServerStatus();
+      if (isReady) {
+        console.log('✅ Server is ready, generating QR code...');
+        await generateQRCode();
+        return;
+      }
+      
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(url).then(() => {
+      alert('URL copied to clipboard!');
+    }).catch(() => {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = url;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      alert('URL copied to clipboard!');
+    });
+  };
+
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  return (
+    <div className="qr-modal-overlay" onClick={handleBackdropClick}>
+      <div className="qr-modal">
+        <div className="qr-modal-header">
+          <h2>📱 Mobile File Share</h2>
+          <button className="close-btn" onClick={onClose}>
+            ✕
+          </button>
+        </div>
+        
+        <div className="qr-modal-content">
+          <div className="status-section">
+            <div className="status-indicator">
+              <span className="status-text">{serverStatus}</span>
+            </div>
+          </div>
+
+          <div className="qr-section">
+            <div className="qr-container">
+              {loading ? (
+                <div className="qr-loading">
+                  <div className="loading-spinner"></div>
+                  <span>Generating QR code...</span>
+                </div>
+              ) : error ? (
+                <div className="qr-error">
+                  <div className="error-icon">⚠️</div>
+                  <div className="error-message">
+                    <span>QR Code generation failed</span>
+                    <p>{error}</p>
+                    <div className="error-actions">
+                      <button 
+                        className="btn btn-primary retry-btn" 
+                        onClick={() => waitForServerAndGenerateQR()}
+                        style={{ marginTop: '10px', marginRight: '10px' }}
+                      >
+                        🔄 Retry
+                      </button>
+                      <button 
+                        className="btn btn-secondary" 
+                        onClick={() => window.location.reload()}
+                        style={{ marginTop: '10px' }}
+                      >
+                        🔄 Restart App
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : qrCodeData?.dataURL ? (
+                <div className="qr-code">
+                  <img 
+                    src={qrCodeData.dataURL} 
+                    alt="QR Code for mobile access"
+                    className="qr-image"
+                    onError={() => setError('QR code image failed to load')}
+                  />
+                </div>
+              ) : (
+                <div className="qr-fallback">
+                  <div className="fallback-icon">📱</div>
+                  <div className="fallback-message">
+                    <span>Use the URL below</span>
+                    <p>Copy and paste into your mobile browser</p>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <div className="qr-instructions">
+              <h3>📸 Scan with your mobile device</h3>
+              <p>Use your phone's camera or QR code scanner app to access the file sharing interface.</p>
+            </div>
+          </div>
+          
+          <div className="url-section">
+            <h3>🔗 Mobile Access URL:</h3>
+            <div className="url-container">
+              <div className="url-display">
+                <code>{url}</code>
+              </div>
+              <button className="btn btn-secondary copy-btn" onClick={copyToClipboard}>
+                📋 Copy URL
+              </button>
+            </div>
+          </div>
+
+          {files && files.length > 0 && (
+            <div className="files-section">
+              <h3>📂 Shared Files ({files.length}):</h3>
+              <div className="files-list">
+                {files.slice(0, 3).map((file, index) => (
+                  <div key={index} className="file-item">
+                    <span className="file-name">{file.split('\\').pop().split('/').pop()}</span>
+                  </div>
+                ))}
+                {files.length > 3 && (
+                  <div className="file-item more-files">
+                    +{files.length - 3} more files
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          
+          <div className="features-section">
+            <h3>📱 What you can do on mobile:</h3>
+            <div className="features-grid">
+              <div className="feature-item">
+                <span className="feature-icon">📥</span>
+                <span>Download shared files</span>
+              </div>
+              <div className="feature-item">
+                <span className="feature-icon">📤</span>
+                <span>Upload files to laptop</span>
+              </div>
+              <div className="feature-item">
+                <span className="feature-icon">🔄</span>
+                <span>Real-time file updates</span>
+              </div>
+              <div className="feature-item">
+                <span className="feature-icon">🌐</span>
+                <span>Works in any browser</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="tips-section">
+            <h3>💡 Tips for best experience:</h3>
+            <ul className="tips-list">
+              <li>✅ Both devices must be on the same WiFi network</li>
+              <li>📱 If QR scanning fails, manually type the URL in your phone's browser</li>
+              <li>⚠️ Accept "not secure" warnings - it's safe on your local network</li>
+              <li>🔄 Keep this window open while transferring files</li>
+              <li>🔋 Large file transfers may take time depending on your WiFi speed</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="qr-modal-footer">
+          <button className="btn btn-primary" onClick={onClose}>
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default QRCodeModal;

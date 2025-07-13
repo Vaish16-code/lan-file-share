@@ -17,6 +17,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   startFileServer: (files) => ipcRenderer.invoke('start-file-server', files),
   stopFileServer: () => ipcRenderer.invoke('stop-file-server'),
   
+  // QR Code generation
+  generateQRCode: (url) => ipcRenderer.invoke('generate-qr-code', url),
+  
   // Event listeners
   onPeerFound: (callback) => ipcRenderer.on('peer-found', callback),
   onPeerLost: (callback) => ipcRenderer.on('peer-lost', callback),

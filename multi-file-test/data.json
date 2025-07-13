@@ -1,0 +1,9 @@
+{
+  "message": "JSON test file for multi-selection",
+  "items": [
+    "file1",
+    "file2",
+    "file3"
+  ],
+  "timestamp": "2025-07-11T15:27:38.944Z"
+}

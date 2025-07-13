@@ -13,7 +13,10 @@
     "electron-dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
     "electron-pack": "electron-builder",
     "preelectron-pack": "npm run build",
-    "dist": "npm run build && electron-builder --publish=never"
+    "dist": "npm run build && electron-builder --publish=never",
+    "server": "node server/index.js",
+    "test-server": "node test-server.js",
+    "dev": "node start.js"
   },
   "keywords": [
     "file-sharing",
@@ -28,6 +31,7 @@
   "dependencies": {
     "bonjour": "^3.5.0",
     "concurrently": "^9.2.0",
+    "cors": "^2.8.5",
     "dgram": "^1.0.1",
     "electron": "^37.2.0",
     "electron-builder": "^26.0.12",

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import Header from './components/Header';
 import DeviceList from './components/DeviceList';
 import FileDropZone from './components/FileDropZone';
+import FileSelector from './components/FileSelector';
 import TransferStatus from './components/TransferStatus';
 import QRCodeModal from './components/QRCodeModal';
-import Header from './components/Header';
 import Notifications from './components/Notifications';
 import WebNotice from './components/WebNotice';
 
@@ -16,6 +17,7 @@ function App() {
   const [showQRModal, setShowQRModal] = useState(false);
   const [serverUrl, setServerUrl] = useState(null);
   const [sharedFiles, setSharedFiles] = useState([]);
+  const [selectedFiles, setSelectedFiles] = useState([]); // New state for file selection
   const [isElectron, setIsElectron] = useState(false);
 
   useEffect(() => {
@@ -170,7 +172,7 @@ function App() {
     setNotifications(prev => prev.filter(n => n.id !== id));
   };
 
-  const handleFileSelect = async () => {
+  const handleFileSelect = async (addToExisting = false) => {
     if (!window.electronAPI) {
       addNotification('warning', 'File selection only available in Electron app');
       return [];
@@ -183,6 +185,20 @@ function App() {
       
       if (result && !result.canceled && result.filePaths && result.filePaths.length > 0) {
         console.log('Selected file paths:', result.filePaths);
+        
+        if (addToExisting) {
+          // Add to existing selection, avoiding duplicates
+          setSelectedFiles(prev => {
+            const newFiles = result.filePaths.filter(path => !prev.includes(path));
+            const updatedFiles = [...prev, ...newFiles];
+            console.log('Updated file selection:', updatedFiles);
+            return updatedFiles;
+          });
+        } else {
+          // Replace existing selection
+          setSelectedFiles(result.filePaths);
+        }
+        
         return result.filePaths;
       } else {
         console.log('No files selected or dialog was canceled');
@@ -193,6 +209,27 @@ function App() {
       addNotification('error', `Failed to select files: ${error.message || error}`);
       return [];
     }
+  };
+
+  const addMoreFiles = async () => {
+    const newFiles = await handleFileSelect(true);
+    if (newFiles.length > 0) {
+      addNotification('success', `Added ${newFiles.length} more file(s) to selection`);
+    }
+  };
+
+  const removeFile = (filePath) => {
+    setSelectedFiles(prev => {
+      const updated = prev.filter(path => path !== filePath);
+      console.log('Removed file, updated selection:', updated);
+      return updated;
+    });
+    addNotification('info', 'File removed from selection');
+  };
+
+  const clearAllFiles = () => {
+    setSelectedFiles([]);
+    addNotification('info', 'All files cleared from selection');
   };
 
   const handleFileSend = async (filePaths, targetPeer) => {
@@ -217,12 +254,47 @@ function App() {
     }
     
     try {
-      // Start file server if not already running
-      const url = await window.electronAPI.startFileServer([]);
+      // Check if we already have files selected or server running
+      if (serverUrl && selectedFiles.length > 0) {
+        console.log('Server already running with selected files, showing QR modal for:', serverUrl);
+        setShowQRModal(true);
+        addNotification('info', 'QR code generated for mobile access');
+        return;
+      }
+      
+      // If no files are selected, prompt user to select files first
+      if (selectedFiles.length === 0) {
+        addNotification('info', 'Please select files to share for mobile access');
+        const filePaths = await handleFileSelect();
+        if (filePaths.length === 0) {
+          addNotification('warning', 'No files selected - QR code generation cancelled');
+          return;
+        }
+      }
+      
+      // Start file server with selected files
+      console.log('Starting file server with selected files:', selectedFiles);
+      addNotification('info', 'Starting file server...');
+      
+      const url = await window.electronAPI.startFileServer(selectedFiles);
+      console.log('File server started at:', url);
+      
+      if (!url) {
+        throw new Error('File server failed to start - no URL returned');
+      }
+      
       setServerUrl(url);
-      setShowQRModal(true);
+      setSharedFiles(selectedFiles);
+      
+      // Give the server a moment to fully start
+      setTimeout(() => {
+        setShowQRModal(true);
+        addNotification('success', `${selectedFiles.length} file(s) now available for mobile download at ${url}`);
+      }, 1000);
+      
     } catch (error) {
-      addNotification('error', 'Failed to start file server');
+      console.error('Error in handleQRCode:', error);
+      addNotification('error', `Failed to generate QR code: ${error.message || error}`);
     }
   };
 
@@ -233,23 +305,29 @@ function App() {
     }
     
     try {
-      console.log('Starting file selection...');
-      const filePaths = await handleFileSelect();
-      console.log('Selected files:', filePaths);
+      // Use selected files if available, otherwise prompt for selection
+      let filesToShare = selectedFiles;
       
-      if (filePaths.length === 0) {
-        addNotification('info', 'No files selected');
-        return;
+      if (filesToShare.length === 0) {
+        console.log('No files selected, starting file selection...');
+        const filePaths = await handleFileSelect();
+        console.log('Selected files:', filePaths);
+        
+        if (filePaths.length === 0) {
+          addNotification('info', 'No files selected');
+          return;
+        }
+        filesToShare = filePaths;
       }
       
-      console.log('Starting file server with files:', filePaths);
-      const url = await window.electronAPI.startFileServer(filePaths);
+      console.log('Starting file server with files:', filesToShare);
+      const url = await window.electronAPI.startFileServer(filesToShare);
       console.log('File server started at:', url);
       
       setServerUrl(url);
-      setSharedFiles(filePaths); // Store the shared files
+      setSharedFiles(filesToShare);
       setShowQRModal(true);
-      addNotification('success', 'Files are now available for mobile download');
+      addNotification('success', `${filesToShare.length} file(s) are now available for mobile download`);
     } catch (error) {
       console.error('Error in handleShareFiles:', error);
       addNotification('error', `Failed to share files: ${error.message || error}`);
@@ -277,6 +355,15 @@ function App() {
           </div>
           
           <div className="right-panel">
+            <FileSelector
+              selectedFiles={selectedFiles}
+              onAddMore={addMoreFiles}
+              onRemoveFile={removeFile}
+              onClearAll={clearAllFiles}
+              onShare={handleShareFiles}
+              isElectron={isElectron}
+            />
+            
             <FileDropZone 
               peers={peers}
               onFileSend={handleFileSend}
@@ -294,7 +381,10 @@ function App() {
       {showQRModal && (
         <QRCodeModal 
           url={serverUrl}
-          files={sharedFiles}
+          files={selectedFiles.map(filePath => {
+            const parts = filePath.split(/[/\\]/);
+            return { name: parts[parts.length - 1], path: filePath };
+          })}
           onClose={() => setShowQRModal(false)}
         />
       )}

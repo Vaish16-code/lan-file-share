@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📱 LAN File Share - Enhanced QR Code</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(255,255,255,0.95);
+            padding: 40px;
+            border-radius: 20px;
+            color: #333;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .qr-image {
+            margin: 20px 0;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            border: 3px solid #667eea;
+        }
+        .scan-instructions {
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        .url-box {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: monospace;
+            word-break: break-all;
+            border: 1px solid #ddd;
+        }
+        .action-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+        .primary-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        .feature-list {
+            text-align: left;
+            margin: 20px 0;
+        }
+        .feature-list li {
+            margin: 8px 0;
+            padding: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 LAN File Share</h1>
+        <h2>📱 Enhanced Mobile Access</h2>
+        
+        <div class="scan-instructions">
+            <h3>📷 How to scan:</h3>
+            <ul class="feature-list">
+                <li>📱 Open your phone's camera app</li>
+                <li>📷 Point at the QR code below</li>
+                <li>🔔 Tap the notification that appears</li>
+                <li>🌐 Your browser will open automatically</li>
+            </ul>
+        </div>
+        
+        <img src="data:image/png;base64,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" alt="Enhanced QR Code" class="qr-image" width="300" height="300">
+        
+        <div class="url-box">
+            📋 Direct Link: http://192.168.29.127:54326?mobile=1&src=qr
+        </div>
+        
+        <a href="http://192.168.29.127:54326?mobile=1&src=qr" class="action-btn primary-btn">📱 Open on This Device</a>
+        <button onclick="copyUrl()" class="action-btn">📋 Copy Link</button>
+        <a href="http://192.168.29.127:54326/api/health" class="action-btn">💊 Test Connection</a>
+        
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+            <h3>✨ Features Available:</h3>
+            <ul class="feature-list">
+                <li>⬇️ Download files to your phone</li>
+                <li>⬆️ Upload files from your phone</li>
+                <li>📁 Browse shared files easily</li>
+                <li>🔄 Real-time file updates</li>
+                <li>🔒 Secure local network sharing</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        function copyUrl() {
+            const url = 'http://192.168.29.127:54326?mobile=1&src=qr';
+            navigator.clipboard.writeText(url).then(() => {
+                alert('✅ Link copied to clipboard!');
+            }).catch(() => {
+                prompt('📋 Copy this URL:', url);
+            });
+        }
+        
+        // Auto-detect if opened from QR scan
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('src') === 'qr') {
+            // Show success message for QR scan
+            const notification = document.createElement('div');
+            notification.innerHTML = '✅ QR Code scanned successfully!';
+            notification.style.cssText = 'position:fixed;top:20px;right:20px;background:#4CAF50;color:white;padding:15px;border-radius:10px;z-index:9999;';
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "title": "LAN File Share Demo",
+  "description": "Real-time file sharing demonstration",
+  "features": [
+    "QR Code Generation",
+    "Mobile Web Interface",
+    "File Upload/Download",
+    "Progress Tracking",
+    "Beautiful UI"
+  ],
+  "timestamp": "2025-07-11T13:55:29.654Z",
+  "version": "1.0.0",
+  "author": "LAN File Share Team"
+}

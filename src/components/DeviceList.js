@@ -36,7 +36,7 @@ const DeviceList = ({ peers, onFileSelect, onFileSend, isElectron = true }) => {
   };
 
   const handleSendFile = async (peer) => {
-    if (isTransferring) return;
+    if (isTransferring || !isElectron) return;
     
     try {
       setIsTransferring(true);
@@ -58,7 +58,7 @@ const DeviceList = ({ peers, onFileSelect, onFileSend, isElectron = true }) => {
 
   const handleDrop = async (e, peer) => {
     e.preventDefault();
-    if (isTransferring) return;
+    if (isTransferring || !isElectron) return;
 
     const files = Array.from(e.dataTransfer.files);
     if (files.length > 0) {
@@ -117,10 +117,10 @@ const DeviceList = ({ peers, onFileSelect, onFileSend, isElectron = true }) => {
             {peers.map((peer) => (
               <div
                 key={peer.id}
-                className={`device-card ${selectedPeer?.id === peer.id ? 'selected' : ''}`}
+                className={`device-card ${selectedPeer?.id === peer.id ? 'selected' : ''} ${!isElectron ? 'disabled' : ''}`}
                 onClick={() => setSelectedPeer(selectedPeer?.id === peer.id ? null : peer)}
-                onDragOver={handleDragOver}
-                onDrop={(e) => handleDrop(e, peer)}
+                onDragOver={isElectron ? handleDragOver : undefined}
+                onDrop={isElectron ? (e) => handleDrop(e, peer) : undefined}
               >
                 <div className="device-header">
                   <div className="device-icons">
@@ -152,18 +152,21 @@ const DeviceList = ({ peers, onFileSelect, onFileSend, isElectron = true }) => {
                       e.stopPropagation();
                       handleSendFile(peer);
                     }}
-                    disabled={isTransferring}
+                    disabled={isTransferring || !isElectron}
+                    title={isElectron ? (isTransferring ? 'Sending...' : 'Send files to this device') : 'Only available in desktop app'}
                   >
                     {isTransferring ? '📤 Sending...' : '📤 Send File'}
                   </button>
                 </div>
                 
-                <div className="drop-zone-overlay">
-                  <div className="drop-zone-content">
-                    <span className="drop-icon">📁</span>
-                    <span className="drop-text">Drop files here</span>
+                {isElectron && (
+                  <div className="drop-zone-overlay">
+                    <div className="drop-zone-content">
+                      <span className="drop-icon">📁</span>
+                      <span className="drop-text">Drop files here</span>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             ))}
           </div>

@@ -33,35 +33,32 @@ const Header = ({ deviceInfo, onQRCode, onShareFiles, isElectron = true }) => {
         </div>
         
         <div className="header-actions">
-          {isElectron ? (
-            <>
-              <button 
-                className="btn btn-secondary"
-                onClick={onShareFiles}
-                title="Share files via QR code for mobile devices"
-              >
-                📱 Share for Mobile
-              </button>
-              <button 
-                className="btn btn-primary"
-                onClick={onQRCode}
-                title="Generate QR code for mobile access"
-              >
-                📷 QR Code
-              </button>
-            </>
-          ) : (
-            <div className="browser-notice">
-              <span className="notice-text">🌐 Browser Preview Mode</span>
-              <a 
-                href="https://github.com/yourusername/lan-file-share" 
-                className="btn btn-primary"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                📥 Download Desktop App
-              </a>
-            </div>
+          <button 
+            className="btn btn-secondary"
+            onClick={onShareFiles}
+            disabled={!isElectron}
+            title={isElectron ? "Share files via QR code for mobile devices" : "Only available in desktop app"}
+          >
+            📱 Share for Mobile
+          </button>
+          <button 
+            className="btn btn-primary"
+            onClick={onQRCode}
+            disabled={!isElectron}
+            title={isElectron ? "Generate QR code for mobile access" : "Only available in desktop app"}
+          >
+            📷 QR Code
+          </button>
+          {!isElectron && (
+            <a 
+              href="https://github.com/yourusername/lan-file-share" 
+              className="btn btn-accent download-btn"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Download the desktop app for full functionality"
+            >
+              📥 Download Desktop App
+            </a>
           )}
         </div>
       </div>
