@@ -218,6 +218,23 @@ function App() {
     }
   };
 
+  const addFiles = (filePaths) => {
+    if (!filePaths || filePaths.length === 0) return;
+    
+    setSelectedFiles(prev => {
+      const newFiles = filePaths.filter(path => !prev.includes(path));
+      const updatedFiles = [...prev, ...newFiles];
+      console.log('Added files via drop/selection:', newFiles);
+      console.log('Updated file selection:', updatedFiles);
+      
+      if (newFiles.length > 0) {
+        addNotification('success', `Added ${newFiles.length} file(s) to selection`);
+      }
+      
+      return updatedFiles;
+    });
+  };
+
   const removeFile = (filePath) => {
     setSelectedFiles(prev => {
       const updated = prev.filter(path => path !== filePath);
@@ -367,6 +384,10 @@ function App() {
             <FileDropZone 
               peers={peers}
               onFileSend={handleFileSend}
+              selectedFiles={selectedFiles}
+              onAddFiles={addFiles}
+              onRemoveFile={removeFile}
+              onClearFiles={clearAllFiles}
               isElectron={isElectron}
             />
             

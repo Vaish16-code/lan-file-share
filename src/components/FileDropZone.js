@@ -1,9 +1,8 @@
 import React, { useState, useRef } from 'react';
 import './FileDropZone.css';
 
-const FileDropZone = ({ peers, onFileSend, isElectron = true }) => {
+const FileDropZone = ({ peers, onFileSend, isElectron = true, selectedFiles = [], onAddFiles, onRemoveFile, onClearFiles }) => {
   const [isDragOver, setIsDragOver] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState([]);
   const [selectedPeer, setSelectedPeer] = useState(null);
   const fileInputRef = useRef(null);
 
@@ -25,7 +24,9 @@ const FileDropZone = ({ peers, onFileSend, isElectron = true }) => {
     const files = Array.from(e.dataTransfer.files);
     if (files.length > 0) {
       const filePaths = files.map(file => file.path).filter(Boolean);
-      setSelectedFiles(filePaths.map(path => ({ path, name: path.split('\\').pop().split('/').pop() })));
+      if (onAddFiles && filePaths.length > 0) {
+        onAddFiles(filePaths);
+      }
     }
   };
 
@@ -37,29 +38,39 @@ const FileDropZone = ({ peers, onFileSend, isElectron = true }) => {
     const files = Array.from(e.target.files);
     if (files.length > 0) {
       const filePaths = files.map(file => file.path || file.name).filter(Boolean);
-      setSelectedFiles(filePaths.map(path => ({ path, name: path.split('\\').pop().split('/').pop() })));
+      if (onAddFiles && filePaths.length > 0) {
+        onAddFiles(filePaths);
+      }
     }
+    
+    // Reset the input value to allow selecting the same files again
+    e.target.value = '';
   };
 
   const handleSendFiles = async () => {
     if (!selectedPeer || selectedFiles.length === 0) return;
     
     try {
-      const filePaths = selectedFiles.map(file => file.path);
-      await onFileSend(filePaths, selectedPeer);
-      setSelectedFiles([]);
+      await onFileSend(selectedFiles, selectedPeer);
+      if (onClearFiles) {
+        onClearFiles();
+      }
       setSelectedPeer(null);
     } catch (error) {
       console.error('Send files error:', error);
     }
   };
 
-  const removeFile = (index) => {
-    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+  const removeFile = (filePath) => {
+    if (onRemoveFile) {
+      onRemoveFile(filePath);
+    }
   };
 
   const clearFiles = () => {
-    setSelectedFiles([]);
+    if (onClearFiles) {
+      onClearFiles();
+    }
     setSelectedPeer(null);
   };
 
@@ -97,71 +108,43 @@ const FileDropZone = ({ peers, onFileSend, isElectron = true }) => {
         />
         
         <div className="drop-content">
-          {selectedFiles.length === 0 ? (
-            <>
-              <div className="drop-icon">📁</div>
-              <div className="drop-text">
-                <h3>
-                  {isElectron 
-                    ? "Drop files here or click to select" 
-                    : "File transfer demo"
-                  }
-                </h3>
-                <p>
-                  {isElectron 
-                    ? "Select multiple files to send to nearby devices" 
-                    : "Download the desktop app for file transfer functionality"
-                  }
-                </p>
+          <div className="drop-icon">📁</div>
+          <div className="drop-text">
+            <h3>
+              {isElectron 
+                ? selectedFiles.length > 0 
+                  ? `${selectedFiles.length} file${selectedFiles.length !== 1 ? 's' : ''} ready to transfer`
+                  : "Drop files here or click to select"
+                : "File transfer demo"
+              }
+            </h3>
+            <p>
+              {isElectron 
+                ? selectedFiles.length > 0
+                  ? "Select a device below to send your files"
+                  : "Select multiple files to send to nearby devices" 
+                : "Download the desktop app for file transfer functionality"
+              }
+            </p>
+            {isElectron && selectedFiles.length > 0 && (
+              <div className="quick-actions">
+                <button 
+                  className="btn btn-secondary btn-small" 
+                  onClick={handleFileSelect}
+                  title="Add more files to selection"
+                >
+                  ➕ Add More
+                </button>
+                <button 
+                  className="btn btn-danger btn-small" 
+                  onClick={clearFiles}
+                  title="Clear all selected files"
+                >
+                  🗑️ Clear All
+                </button>
               </div>
-            </>
-          ) : (
-            <>
-              <div className="files-preview">
-                <h3>Selected Files ({selectedFiles.length})</h3>
-                <div className="files-list">
-                  {selectedFiles.map((file, index) => (
-                    <div key={index} className="file-item">
-                      <div className="file-info">
-                        <span className="file-icon">📄</span>
-                        <div className="file-details">
-                          <span className="file-name">{file.name}</span>
-                          <span className="file-size">{formatFileSize(file.path)}</span>
-                        </div>
-                      </div>
-                      <button
-                        className="remove-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removeFile(index);
-                        }}
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ))}
-                </div>
-                <div className="file-actions">
-                  <button 
-                    className="btn btn-secondary" 
-                    onClick={clearFiles}
-                    disabled={!isElectron}
-                    title={isElectron ? "Clear all files" : "Only available in desktop app"}
-                  >
-                    Clear All
-                  </button>
-                  <button 
-                    className="btn btn-primary" 
-                    onClick={handleFileSelect}
-                    disabled={!isElectron}
-                    title={isElectron ? "Add more files" : "Only available in desktop app"}
-                  >
-                    Add More
-                  </button>
-                </div>
-              </div>
-            </>
-          )}
+            )}
+          </div>
         </div>
       </div>
       

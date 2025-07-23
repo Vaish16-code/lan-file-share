@@ -80,6 +80,19 @@
   line-height: 1.4;
 }
 
+.quick-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.btn-small {
+  padding: 6px 12px;
+  font-size: 0.8em;
+  min-height: auto;
+}
+
 .files-preview h3 {
   color: #333;
   margin-bottom: 10px;
